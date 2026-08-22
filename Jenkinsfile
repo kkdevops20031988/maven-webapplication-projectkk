@@ -22,13 +22,13 @@ pipeline{
         sh "mvn clean package"
      }
     }
-/*
+
     stage('SQ Report') {
      steps{
       sh "mvn org.sonarsource.scanner.maven:sonar-maven-plugin:sonar"
      }
     }
-*/
+
     stage('Nexus Deploy') {
      steps {
       sh "mvn clean deploy"
@@ -41,9 +41,15 @@ pipeline{
 
       curl -u mahesh:mahesh123 \
 --upload-file /var/lib/jenkins/workspace/Elig_Declarative_PL_Dev/target/maven-web-application.war \
-"http://3.110.45.16:8080/manager/text/deploy?path=/maven-web-application&update=true"
+"http://15.206.174.234:8080/manager/text/deploy?path=/maven-web-application&update=true"
           
         """
+     }
+    }
+
+    stage('bsnl-qa') {
+     steps{
+       build job: 'BSNL-QA' //this is downstream of Dev
      }
     }
   } //stages ending
@@ -62,25 +68,3 @@ pipeline{
  }
     
 } // pipeline ending
-
-// Notification method
-def notifyBuild(String buildStatus = 'STARTED') {
-    buildStatus = buildStatus ?: 'SUCCESS'
-
-    def colorCode
-    def subject = "${buildStatus}: Job '${env.JOB_NAME} [${env.BUILD_NUMBER}]'"
-    def summary = "${subject} (${env.BUILD_URL})"
-
-    switch (buildStatus) {
-        case 'STARTED':
-            colorCode = '#FFFF00' // Yellow
-            break
-        case 'SUCCESS':
-            colorCode = '#00FF00' // Green
-            break
-        default:
-            colorCode = '#FF0000' // Red
-    }
-
-    slackSend(color: colorCode, message: summary, channel: '#jio-om')
-}
