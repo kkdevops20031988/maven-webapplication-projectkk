@@ -53,18 +53,5 @@ pipeline{
      }
     }
   } //stages ending
-
- post {
-  success{
-    script {
-     notifyBuild(currentBuild.result)
-    }
-  }
-  failure{
-    script {
-     notifyBuild(currentBuild.result)
-    }
-  }
- }
     
 } // pipeline ending
