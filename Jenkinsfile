@@ -49,7 +49,7 @@ pipeline{
 
     stage('bsnl-qa') {
      steps{
-       build job: 'BSNL-QA' //this is downstream of Dev
+       build job: 'JIO-DECL-qa' //this is downstream of Dev
      }
     }
   } //stages ending
